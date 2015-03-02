@@ -1,3 +1,10 @@
+#
+#
+# WARNING: there is an error in generate.log.wages: the different distributions
+#           are for assignment, not treatment received!
+#
+#
+
 
 #set.seed(3341)
 
@@ -119,7 +126,6 @@ work.y <- sapply(seq(N), function(i) ifelse(strsplit(strata.assignment[i],"")[[1
 y <- list(assign = assign.y,
           treat = treat.y,
           work52 = work.y)
-
 
 
 log.wages <- sapply(seq(N), function(i) gen.log.wages(X[i,], strata.assignment[i], treat.y[i], theta))
