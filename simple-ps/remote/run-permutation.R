@@ -1,4 +1,4 @@
-source("../generate.R", chdir=T)
+#source("../generate.R", chdir=T)
 source("../estimation-automated.R", chdir=T)
 source("../inference_permutation.R", chdir=T)
 
@@ -6,8 +6,7 @@ source("../inference_permutation.R", chdir=T)
 args <- commandArgs(trailingOnly = TRUE)
 tau <- as.numeric(args[2])
 
-
-#load("params.Rdata")
+load("simdata.Rdata")
 load("theta.Rdata")
 
 
