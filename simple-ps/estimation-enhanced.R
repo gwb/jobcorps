@@ -405,6 +405,55 @@ m.step.optim <- function(assign, W.obs, theta, X, O.fn, strata.probas, method="N
     return(theta)
 }
 
+em.algo.optim.stopping <- function(W.obs, theta.init, assign, X, O.fn, eps=0.001, maxiter=10){
+    theta <- theta.init
+    res.strata.probas <- NULL
+    strata.probas <- NULL
+    obs.lik.list <- NULL
+
+    flag=FALSE
+    i = 0
+    while(!flag){
+        i <- i+1
+        cat("Iteration:", i, "\n")
+
+        cat("   E-step:\n")
+        strata.probas <- update.posterior.strata.proba.full(theta, X, W.obs, O.fn)
+        strata.probas <- add.small.noise(strata.probas)
+
+        cat("   M-step:\n")
+        theta <- m.step.optim(assign, W.obs, theta, X, O.fn, strata.probas, "BFGS")
+
+        #summary
+        est.strata.prop <- as.vector(do.call('cbind', estimate.strata.proportions(theta$pi, X[,1])))
+        res.strata.probas <- rbind(res.strata.probas, est.strata.prop)
+        obs.lik.i <- obs.lik.full(X, W.obs, theta, O.fn)
+        obs.lik.list <- c(obs.lik.list, obs.lik.i)
+        
+        print(est.strata.prop)
+        cat("  LOWER BOUND LIK:\n")
+        print(obs.lik.i)
+
+        cat("  DELTA LIK:\n")
+        if(i>1){
+            print(obs.lik.i - obs.lik.list[i-1])
+        }
+        
+        # stopping
+        if(i > maxiter){
+            flag=TRUE
+        }
+        if(i>1){
+            if(obs.lik.i - obs.lik.list[i-1] < eps){
+                flag=TRUE
+            }
+        }
+    }
+    return(list(theta, strata.probas, res.strata.probas, obs.lik.list))
+}
+
+
+
 em.algo.optim <- function(W.obs, theta.init, assign, X, O.fn, niter=10){
     theta <- theta.init
     res.strata.probas <- NULL
@@ -843,3 +892,16 @@ obs.lik <- function(X, W, theta, PS.fn, O.fn){
     return(res)
 }
 
+
+# # # # # #
+# Direct optimization
+# # # # # #
+
+#direct.optim <- function(X, W, theta.init, O.fn){
+#    fitfn <- function(pars){
+#        bet <- pars[seq(1, 40)]
+#        sig <- pars[seq(41, 48)]
+#        alpha <- pars[seq(49, 63)]
+#    }
+#
+#}
