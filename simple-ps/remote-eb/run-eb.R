@@ -18,7 +18,7 @@ strata.probas.post <- do.call("cbind", em.res[[2]])
 theta.hat <- em.res[[1]]
 
 # computes tau posterior distriubtion conditional on theta = \hat{theta}
-tau.hat.distr <- eb.post.estimate(W.y, y$assign, strata.probas.post, theta.hat, nsimul=100)
+tau.hat.distr <- eb.post.estimate(W.y, y$assign, strata.probas.post, theta.hat, nsimul=5000)
 
 
 save(tau.hat.distr, em.res, W.y, y, file = paste("results-tau/res_",idx,".Rdata", sep=""))

@@ -4,7 +4,7 @@ load("hat.Rdata")
 
 set.seed(123)
 
-for(i in seq(100)){
+for(i in seq(500)){
     print(i)
     res.i <- draw.new.data(theta.hat, X, y$assign)
     y <- res.i[[1]]
